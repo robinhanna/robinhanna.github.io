@@ -1,0 +1,110 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+  <title>Car Pool</title>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Car Pool</h1>
+    <form id="carpool-form">
+      <div class="mb-3">
+        <label for="departure-time">Departure Time</label>
+        <input type="datetime-local" class="form-control" id="departure-time" required>
+      </div>
+      <div class="mb-3">
+        <label for="driving-option">Driving or Need a Lift</label>
+        <select class="form-control" id="driving-option" required>
+          <option value="driving">Driving</option>
+          <option value="lift">Need a Lift</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="shuttle-option">Willing to Pay for Shuttle</label>
+        <select class="form-control" id="shuttle-option" required>
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" required>
+      </div>
+      <div class="mb-3">
+        <label for="phone">Phone Number</label>
+        <input type="tel" class="form-control" id="phone" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <div id="results" class="mt-5">
+      <h2>Results</h2>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Date & Time</th>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Shuttle Number</th>
+          </tr>
+        </thead>
+        <tbody id="results-body">
+          <!-- Results will be dynamically added here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+  <script>
+    document.getElementById('carpool-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const departureTime = document.getElementById('departure-time').value;
+      const drivingOption = document.getElementById('driving-option').value;
+      const shuttleOption = document.getElementById('shuttle-option').value;
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const shuttleNumber = getNextShuttleNumber();
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${formatDateTime(departureTime)}</td>
+        <td>${name}</td>
+        <td>${phone}</td>
+        <td>${shuttleOption === 'yes' ? shuttleNumber : ''}</td>
+      `;
+
+      document.getElementById('results-body').appendChild(row);
+      document.getElementById('carpool-form').reset();
+    });
+
+    function formatDateTime(dateTime) {
+      const date = new Date(dateTime);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${day}.${month}. ${hours}:${minutes}`;
+    }
+
+    function getNextShuttleNumber() {
+      const rows = document.getElementById('results-body').getElementsByTagName('tr');
+      let shuttleNumber = 1;
+      for (let i = rows.length - 1; i >= 0; i--) {
+        const row = rows[i];
+        const shuttleCell = row.cells[3];
+        if (shuttleCell.textContent !== '') {
+          const currentShuttleNumber = parseInt(shuttleCell.textContent);
+          if (currentShuttleNumber === 5) {
+            shuttleNumber = 1;
+          } else {
+            shuttleNumber = currentShuttleNumber + 1;
+          }
+          break;
+        }
+      }
+      return shuttleNumber;
+    }
+  </script>
+</body>
+</html>
