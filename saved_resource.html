@@ -1,0 +1,123 @@
+
+<!-- saved from url=(0057)https://www.literallyanything.io/app/0CIj1YL0fPMW5XOdeihe -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Car Pool Page</title>
+  <link rel="stylesheet" href="./bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Car Pool</h1>
+    <form id="carPoolForm" class="mb-4">
+      <div class="row">
+        <div class="col-md-3">
+          <label for="departureDate" class="form-label">Departure Date</label>
+          <input type="date" class="form-control" id="departureDate" required="">
+        </div>
+        <div class="col-md-3">
+          <label for="departureTime" class="form-label">Departure Time</label>
+          <input type="time" class="form-control" id="departureTime" required="">
+        </div>
+        <div class="col-md-3">
+          <label for="driveOrLift" class="form-label">Drive or Lift</label>
+          <select class="form-select" id="driveOrLift" required="">
+            <option value="">Choose...</option>
+            <option value="drive">Drive</option>
+            <option value="lift">Lift</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="shuttleOption" class="form-label">Willing to Pay for Shuttle</label>
+          <select class="form-select" id="shuttleOption" required="">
+            <option value="">Choose...</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <label for="phoneNumber" class="form-label">Phone Number</label>
+          <input type="tel" class="form-control" id="phoneNumber" required="">
+        </div>
+        <div class="col-md-6">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="name" required="">
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+    <div id="carPoolResults">
+      <h2>Results</h2>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Shuttle</th>
+          </tr>
+        </thead>
+        <tbody id="carPoolResultsBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="./bootstrap.min.js"></script>
+  <script>
+    // Function to add leading zeros
+    function pad(number) {
+      return number.toString().padStart(2, '0');
+    }
+
+    // Function to generate shuttle number
+    function generateShuttleNumber(index) {
+      const shuttleNumbers = ['1', '2', '3', '4', '5'];
+      return shuttleNumbers[index % 5];
+    }
+
+    // Function to add a new row to the results table
+    function addRowToTable(date, time, name, phoneNumber, shuttleNumber) {
+      const tableBody = document.getElementById('carPoolResultsBody');
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td>${date}</td>
+        <td>${time}</td>
+        <td>${name}</td>
+        <td>${phoneNumber}</td>
+        <td>${shuttleNumber}</td>
+      `;
+      tableBody.appendChild(newRow);
+    }
+
+    // Function to handle form submission
+    function handleSubmit(event) {
+      event.preventDefault();
+      
+      const departureDate = document.getElementById('departureDate').value;
+      const departureTime = document.getElementById('departureTime').value;
+      const driveOrLift = document.getElementById('driveOrLift').value;
+      const shuttleOption = document.getElementById('shuttleOption').value;
+      const phoneNumber = document.getElementById('phoneNumber').value;
+      const name = document.getElementById('name').value;
+      
+      const tableRows = document.querySelectorAll('#carPoolResultsBody tr');
+      const shuttleCount = tableRows.length;
+      const shuttleNumber = shuttleOption === 'yes' ? generateShuttleNumber(shuttleCount) : '';
+
+      addRowToTable(departureDate, departureTime, name, phoneNumber, shuttleNumber);
+
+      // Reset form values
+      document.getElementById('carPoolForm').reset();
+    }
+
+    // Add event listener to form submit
+    document.getElementById('carPoolForm').addEventListener('submit', handleSubmit);
+  </script>
+
+</body></html>
